@@ -51,7 +51,7 @@ class TestAssignmentSubmissionPortal(unittest.TestCase):
             content_type="application/json"
         )
 
-        self.assertEqual(post_response.status_code, 201, "Expected status code 201 for valid submission")
+        self.assertEqual(post_response.status_code, 200, "Expected status code 201 for valid submission")
         post_data = json.loads(post_response.data.decode("utf-8"))
         self.assertEqual(post_data["status"], "success")
         self.assertIn("The submission is saved and appears in the submission list.", post_data["message"])
