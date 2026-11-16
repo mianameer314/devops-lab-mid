@@ -130,51 +130,6 @@ def health_check():
     return jsonify({"status": "healthy", "service": "Assignment Submission Portal"}), 200
 
 
-@app.route("/report", methods=["GET", "POST"])
-def handle_report():
-    """Handle incoming test report JSON from GitHub Actions CI runner."""
-    if request.method == "GET":
-        return jsonify({
-            "receiver": "DevOps Report Receiver",
-            "status": "online",
-            "ready": True
-        }), 200
-
-    report_data = request.get_json(silent=True)
-    if not report_data:
-        return jsonify({"error": "Empty or invalid body"}), 400
-
-    # Save to test-report.json
-    output_file = "test-report.json"
-    with open(output_file, "w", encoding="utf-8") as f:
-        json.dump(report_data, f, indent=4)
-
-    # Archive copy
-    archive_dir = "reports"
-    os.makedirs(archive_dir, exist_ok=True)
-    timestamp_str = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
-    archive_file = os.path.join(archive_dir, f"test-report_{timestamp_str}.json")
-    with open(archive_file, "w", encoding="utf-8") as f:
-        json.dump(report_data, f, indent=4)
-
-    # Print nicely in terminal
-    status = report_data.get("overall_status", "UNKNOWN")
-    summary = report_data.get("summary", {})
-    print("\n" + "=" * 65)
-    print(f"[RECEIVER] New Test Report Received at: {datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
-    print("=" * 65)
-    print(f" Repository : {report_data.get('repository')}")
-    print(f" Commit SHA : {report_data.get('commit_sha')}")
-    print(f" Status     : >>> {status} <<< (Total: {summary.get('total')}, Passed: {summary.get('passed')}, Failed: {summary.get('failed')})")
-    print(f" Saved to   : {os.path.abspath(output_file)}")
-    print("=" * 65 + "\n")
-
-    return jsonify({
-        "status": "success",
-        "message": "Report received and saved as test-report.json"
-    }), 200
-
-
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000, debug=True)
 
