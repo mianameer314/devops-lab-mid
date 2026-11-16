@@ -115,7 +115,8 @@ def run_and_report():
                 data=payload_bytes,
                 headers={
                     "Content-Type": "application/json",
-                    "User-Agent": "GitHub-Actions-CI-Runner"
+                    "User-Agent": "GitHub-Actions-CI-Runner",
+                    "bypass-tunnel-reminder": "true"
                 },
                 method="POST"
             )

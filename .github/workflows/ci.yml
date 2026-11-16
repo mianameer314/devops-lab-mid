@@ -51,7 +51,7 @@ jobs:
         run: |
           if [ -n "$RECEIVER_URL" ] && [ -f "test-report.json" ]; then
             echo "Sending test report to: $RECEIVER_URL"
-            curl -s -X POST -H "Content-Type: application/json" -d @test-report.json "$RECEIVER_URL" || echo "Warning: Receiver unreachable"
+            curl -s -X POST -H "Content-Type: application/json" -H "bypass-tunnel-reminder: true" -d @test-report.json "$RECEIVER_URL" || echo "Warning: Receiver unreachable"
           else
             echo "Notice: RECEIVER_URL secret not set or test-report.json not found."
           fi
